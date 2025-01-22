@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:17.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  node-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: node
+    environment:
+      - user=postgres
+      - host=postgres
+      - database=postgres
+      - password=postgres
+      - dbport=5432
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    profiles:
+      - node
+
+  deno-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: deno
+    environment:
+      - user=postgres
+      - host=postgres
+      - database=postgres
+      - password=postgres
+      - dbport=5432
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    profiles:
+      - deno
+
+  bun-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: bun
+    environment:
+      - user=postgres
+      - host=postgres
+      - database=postgres
+      - password=postgres
+      - dbport=5432
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    profiles:
+      - bun
+
+volumes:
+  postgres-data:
