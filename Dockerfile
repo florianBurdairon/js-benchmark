@@ -9,12 +9,12 @@ CMD ["node", "index.js"]
 FROM denoland/deno:2.1.4 AS deno
 WORKDIR /usr/src/app
 COPY . .
-RUN npm install
-CMD ["deno", "index.js"]
+RUN deno install
+CMD ["deno", "--allow-all","index.js" ]
 
 # Bun image
 FROM oven/bun:latest AS bun
 WORKDIR /usr/src/app
 COPY . .
-RUN npm install
+RUN bun install
 CMD ["bun", "index.js"]
