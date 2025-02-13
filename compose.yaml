@@ -12,8 +12,8 @@ services:
       - ./postgresql-dump.sql:/tmp/postgresql-dump.sql
     command: >
       sh -c "
-      docker-entrypoint.sh postgres & 
-      sleep 1 && 
+      docker-entrypoint.sh postgres &
+      sleep 1 &&
       psql -U postgres -d postgres -f /tmp/postgresql-dump.sql;
       wait
       "
@@ -24,7 +24,8 @@ services:
       dockerfile: Dockerfile
       target: node
     environment:
-      - DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres?schema=public"
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?schema=public
+      - JOIN=query
     ports:
       - 3000:3000
     depends_on:
@@ -38,7 +39,8 @@ services:
       dockerfile: Dockerfile
       target: deno
     environment:
-      - DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres?schema=public"
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?schema=public
+      - JOIN=query
     ports:
       - 3000:3000
     depends_on:
@@ -52,7 +54,8 @@ services:
       dockerfile: Dockerfile
       target: bun
     environment:
-      - DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres?schema=public"
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?schema=public
+      - JOIN=query
     ports:
       - 3000:3000
     depends_on:

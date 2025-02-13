@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model pokemon {
+  id              Int             @id(map: "pokemon_pk") 
+  identifier      String          @db.VarChar(100)
+  species_id      Int
+  species         pokemon_species @relation(fields: [species_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_species_id_fk")
+  height          Int
+  weight          Int
+  base_experience Int
+  order           Int
+  is_default      Boolean
+  pokemon_types   pokemon_types[]
+
+  @@index([species_id], map: "pokemon_species_id_index")
+}
+
+model pokemon_colors {
+  id         Int     @id(map: "pokemon_colors_pk") @default(autoincrement())
+  identifier String? @db.VarChar(100)
+
+  pokemon_species pokemon_species[] @relation("pokemon_speciesTopokemon_colors")
+}
+
+model pokemon_shapes {
+  id         Int     @id(map: "pokemon_shapes_pk") @default(autoincrement())
+  identifier String? @db.VarChar(100)
+
+  pokemon_species pokemon_species[] @relation("pokemon_speciesTopokemon_shapes")
+}
+
+model pokemon_species {
+  id                      Int               @id(map: "pokemon_species_pk")
+  identifier              String            @db.VarChar(100)
+  generation_id           Int?
+  evolves_from_species_id Int?
+  evolution_chain_id      Int?
+  color_id                Int?
+  color                  pokemon_colors?   @relation("pokemon_speciesTopokemon_colors", fields: [color_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_species_pokemon_colors_id_fk")
+  shape_id                Int?
+  shape                  pokemon_shapes?   @relation("pokemon_speciesTopokemon_shapes", fields: [shape_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_species_pokemon_shapes_id_fk")
+  habitat_id              Int?
+  gender_rate             Int?
+  capture_rate            Int?
+  base_happiness          Int?
+  is_baby                 Boolean?
+  hatch_counter           Int?
+  has_gender_differences  Boolean?
+  growth_rate_id          Int?
+  forms_switchable        Boolean?
+  order                   Int?
+  conquest_order          Int?
+  pokemon_species         pokemon_species?  @relation("pokemon_speciesTopokemon_species", fields: [evolves_from_species_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_species_pokemon_species_id_fk")
+  other_pokemon_species   pokemon_species[] @relation("pokemon_speciesTopokemon_species")
+
+  pokemon pokemon[] @relation(map: "pokemon_species_id_fk")
+}
+
+model pokemon_types {
+  id      Int     @default(autoincrement())
+  type_id Int
+  slot    Int
+  pokemon pokemon @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pokemon_types_pokemon_id_fk")
+
+  @@id([id, type_id], map: "pokemon_types_pk")
+  @@index([type_id], map: "pokemon_types_type_id_index")
+}
+
+model types {
+  id              Int    @id(map: "types_pk") @default(autoincrement())
+  identifier      String @db.VarChar(100)
+  generation_id   Int
+  damage_class_id Int?
+}
