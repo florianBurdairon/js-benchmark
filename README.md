@@ -1,7 +1,7 @@
 # Membre du groupe :
 - BLUMET Thomas
 - BURDAIRON Florian
-- Halvick Thomas
+- HALVICK Thomas
 
 # Lancement de l'API
 
